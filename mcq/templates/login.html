@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="{%static 'css/index.css' %}" />
+  </head>
+  <body>
+    {{test}} {%for x in test%} {{x}} {%endfor%}
+    <div class="loginCard">
+      <form action="/login" method="post" class="login-form">
+        {% csrf_token %}
+        <label class="inp" for="name">name :</label><br />
+        <input class="inp" type="text" name="name" id="name" required /><br />
+        <label class="inp" for="email">Email :</label><br />
+        <input
+          class="inp"
+          type="email"
+          name="email"
+          id="email"
+          required
+        /><br />
+        <label class="inp" for="test">Select Test</label><br />
+        <select class="inp" name="test" id="test" required>
+          {%for x in test%}
+          <option value="{{x.id}}">{{x.name}}</option>
+          {%endfor%}</select
+        ><br />
+        <input class="inp" type="submit" name="submit" id="submit" />
+      </form>
+      <br />
+    </div>
+  </body>
+</html>

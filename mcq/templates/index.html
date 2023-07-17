@@ -1,0 +1,65 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'css/index.css' %}" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form action="/submit" method="post">
+      {% csrf_token%} {{questions}} {% for x in questions %}
+      <div class="container">
+        <p class="question">{{forloop.counter}} . {{x.name}}</p>
+        <ul class="choices">
+          <li>
+            <label
+              ><input type="radio" name="{{x.id}}" value="choice1" /><span
+                >{{x.choice1}}</span
+              ></label
+            >
+          </li>
+          <li>
+            <label
+              ><input type="radio" name="{{x.id}}" value="choice2" /><span
+                >{{x.choice2}}</span
+              ></label
+            >
+          </li>
+          <li>
+            <label
+              ><input type="radio" name="{{x.id}}" value="choice3" /><span
+                >{{x.choice3}}</span
+              ></label
+            >
+          </li>
+          <li>
+            <label
+              ><input type="radio" name="{{x.id}}" value="choice4" /><span
+                >{{x.choice4}}</span
+              ></label
+            >
+          </li>
+        </ul>
+      </div>
+      {%endfor%}
+
+      <div class="btn-container">
+        <input
+          type="submit"
+          name="prev"
+          value="prev"
+          id="prev"
+          disabled="{{start}}"
+        />
+        {%if end %}
+        <input type="submit" name="next" value="next" id="next" />
+        {% else%}
+        <input type="submit" name="submit" value="submit" id="next" />
+        {%endif%}
+      </div>
+    </form>
+  </body>
+</html>
