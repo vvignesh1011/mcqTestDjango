@@ -7,6 +7,21 @@ from . import models
 import random
 
 
+def mapwithAns(questions, testTaker):
+    testTaker = models.TestTaker.objects.values().get(email=testTaker)
+
+    def getAnswer(question):
+        answer = models.Answer.objects.values().get(
+            question=question['id'], testTaker=testTaker['id'])
+
+        question['default'] = answer['selectedChoice']
+
+        return question
+
+    questions = map(getAnswer, questions)
+    return questions
+
+
 def index(request):
     testTaker = request.session.get('testTaker', False)
     page = request.session.get('page', 1)
@@ -24,7 +39,7 @@ def index(request):
         (page*10)-10:(page*10)]
     end = page * 10 <= total
     start = page == 1
-    print(questions, 'questions')
+    questions = mapwithAns(questions, testTaker)
 
     return render(request, "index.html", {'questions': questions, "page": page, 'end': end, 'start': start})
 

@@ -64,4 +64,4 @@ class Answer(models.Model):
         ]
 
     def __str__(self):
-        return self.testTaker.email, self.question.name, self.isCorect
+        return self.testTaker.email + ', '+self.question.name+', {corect}'.format(corect=self.isCorect)

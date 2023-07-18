@@ -13,33 +13,48 @@
       {% csrf_token%} {{questions}} {% for x in questions %}
       <div class="container">
         <p class="question">{{forloop.counter}} . {{x.name}}</p>
+
         <ul class="choices">
           <li>
-            <label
-              ><input type="radio" name="{{x.id}}" value="choice1" /><span
-                >{{x.choice1}}</span
-              ></label
+            <label>
+              {%if x.default == 'choice1' %}
+              <input type="radio" name="{{x.id}}" value="choice1" checked />
+              > {%else%}
+              <input type="radio" name="{{x.id}}" value="choice1" />
+              {%endif%}
+              <span>{{x.choice1}}</span></label
             >
           </li>
           <li>
-            <label
-              ><input type="radio" name="{{x.id}}" value="choice2" /><span
-                >{{x.choice2}}</span
-              ></label
+            <label>
+              {%if x.default == 'choice2' %}
+              <input type="radio" name="{{x.id}}" value="choice2" checked />
+              {%else%}
+              <input type="radio" name="{{x.id}}" value="choice2" />
+              {%endif%}
+
+              <span>{{x.choice2}}</span></label
             >
           </li>
           <li>
-            <label
-              ><input type="radio" name="{{x.id}}" value="choice3" /><span
-                >{{x.choice3}}</span
-              ></label
+            <label>
+              {%if x.default == 'choice3'%}
+              <input type="radio" name="{{x.id}}" value="choice3" checked />
+              {%else%}
+              <input type="radio" name="{{x.id}}" value="choice3" />
+              {%endif%}
+
+              <span>{{x.choice3}}</span></label
             >
           </li>
           <li>
-            <label
-              ><input type="radio" name="{{x.id}}" value="choice4" /><span
-                >{{x.choice4}}</span
-              ></label
+            <label>
+              {%if x.default == 'choice4' %}
+              <input type="radio" name="{{x.id}}" value="choice4" checked />
+              {%else%}
+              <input type="radio" name="{{x.id}}" value="choice4" />
+              {%endif%}
+              <span>{{x.choice4}}</span></label
             >
           </li>
         </ul>
