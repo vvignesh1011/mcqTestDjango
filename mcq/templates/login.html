@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{%static 'css/index.css' %}" />
   </head>
   <body>
-    {{test}} {%for x in test%} {{x}} {%endfor%}
+    {% comment %} {%for x in test%} {{x}} {%endfor%} {% endcomment %}
     <div class="loginCard">
       <form action="/login" method="post" class="login-form">
         {% csrf_token %}

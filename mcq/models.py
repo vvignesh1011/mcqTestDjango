@@ -49,12 +49,12 @@ class TestTaker(models.Model):
 
 
 class Answer(models.Model):
-    answer_list = [('choice1', 'choice1'), ('choice2', 'choice2'),
-                   ('choice3', 'choice3'), ('choice4', 'choice4')]
+    # answer_list = [('choice1', 'choice1'), ('choice2', 'choice2'),
+    #                ('choice3', 'choice3'), ('choice4', 'choice4')]
     testTaker = models.ForeignKey(TestTaker, on_delete=models.CASCADE)
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    selectedChoice = models.CharField(max_length=8, choices=answer_list)
+    selectedChoice = models.CharField(max_length=8)
     isCorect = models.BooleanField(default=False)
 
     class Meta:

@@ -8,9 +8,12 @@
     <link rel="stylesheet" href="{% static 'css/index.css' %}" />
     <title>Document</title>
   </head>
-  <body>
+  <body style="padding: 10px">
+    <a style="margin: 20px; margin-left: auto; float: right" href="/logout"
+      >logout</a
+    >
     <form action="/submit" method="post">
-      {% csrf_token%} {{questions}} {% for x in questions %}
+      {% csrf_token%} {% for x in questions %}
       <div class="container">
         <p class="question">{{forloop.counter}} . {{x.name}}</p>
 
@@ -19,7 +22,7 @@
             <label>
               {%if x.default == 'choice1' %}
               <input type="radio" name="{{x.id}}" value="choice1" checked />
-              > {%else%}
+              {%else%}
               <input type="radio" name="{{x.id}}" value="choice1" />
               {%endif%}
               <span>{{x.choice1}}</span></label
@@ -62,6 +65,7 @@
       {%endfor%}
 
       <div class="btn-container">
+        {% if start %}
         <input
           type="submit"
           name="prev"
@@ -69,10 +73,12 @@
           id="prev"
           disabled="{{start}}"
         />
-        {%if end %}
-        <input type="submit" name="next" value="next" id="next" />
+        {%else%}
+        <input type="submit" name="prev" value="prev" id="prev" />
+        {%endif%} {%if end %}
+        <input type="submit" name="submit" value="submit" id="submit" />
         {% else%}
-        <input type="submit" name="submit" value="submit" id="next" />
+        <input type="submit" name="next" value="next" id="next" />
         {%endif%}
       </div>
     </form>
