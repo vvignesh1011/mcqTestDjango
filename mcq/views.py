@@ -49,12 +49,13 @@ def index(request):
     total = models.Question.objects.count()
     questions = models.Question.objects.order_by(sortby).values().all()[
         (page*10)-10:(page*10)]
-    end = page == math.ceil(total/10)
+    totalPage = math.ceil(total/10)
+    end = page == totalPage
     start = (page == 1)
     print(page, start, 'page')
     questions = mapwithAns(questions, testTaker, testId)
 
-    return render(request, "index.html", {'questions': questions, "page": page, 'end': end, 'start': start})
+    return render(request, "index.html", {'questions': questions, "page": page, 'totalPage': totalPage, 'end': end, 'start': start})
 
 
 def login(request):

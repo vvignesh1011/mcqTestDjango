@@ -75,7 +75,10 @@
         />
         {%else%}
         <input type="submit" name="prev" value="prev" id="prev" />
-        {%endif%} {%if end %}
+        {%endif%}
+        <div>Page : {{page}}/{{totalPage}}</div>
+
+        {%if end %}
         <input type="submit" name="submit" value="submit" id="submit" />
         {% else%}
         <input type="submit" name="next" value="next" id="next" />
