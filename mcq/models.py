@@ -1,10 +1,16 @@
 from django.db import models
+import datetime
+import random
 
 # Create your models here.
 
 
 class Test(models.Model):
     name = models.CharField(unique=True, max_length=250)
+    duration = models.IntegerField(
+        blank=True, null=True, name='duration in minutes')
+    noOfQuestions = models.IntegerField(blank=True, null=True)
+    marksPerQuestions = models.IntegerField(default=1)
 
     def __str__(self):
         return self.name
@@ -25,21 +31,6 @@ class Question(models.Model):
         return self.name
 
 
-# class Choices(models.Model):
-    # question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    # name = models.CharField(max_length=1000)
-    # isCorrect = models.BooleanField(default=False)
-
-    # class Meta:
-    #     unique_together = [
-    #         # no duplicated choice per question
-    #         ("question", "name")
-    #     ]
-
-    # def __str__(self):
-    #     return self.name
-
-
 class TestTaker(models.Model):
     name = models.CharField(max_length=250)
     email = models.CharField(unique=True, max_length=250)
@@ -48,20 +39,70 @@ class TestTaker(models.Model):
         return self.name
 
 
-class Answer(models.Model):
-    # answer_list = [('choice1', 'choice1'), ('choice2', 'choice2'),
-    #                ('choice3', 'choice3'), ('choice4', 'choice4')]
+# answer sheet
+class Answersheet(models.Model):
     testTaker = models.ForeignKey(TestTaker, on_delete=models.CASCADE)
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    selectedChoice = models.CharField(max_length=8)
-    isCorect = models.BooleanField(default=False)
-
-    class Meta:
-        unique_together = [
-            # no duplicated choice per question
-            ("question", "testTaker", 'test')
-        ]
+    startedAt = models.DateTimeField(blank=True, null=True)
+    endAt = models.DateTimeField(blank=True, null=True)
+    marksPerQuestion = models.IntegerField(default=1)
+    totalQuestions = models.IntegerField(default=0)
+    ended = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.testTaker.email + ', '+self.question.name+', {corect}'.format(corect=self.isCorect)
+        return f"self.test self.test self.getMarks()"+'/'+f"self.mak"
+
+# start test
+    def startTest(self):
+        totalQuestions = Answer.objects.filter(
+            answerSheet=self.id).all().count()
+        if (totalQuestions != 0):
+            return
+
+        try:
+            test = Test.objects.get(id=self.test.id)
+            self.marksPerQuestion = test.marksPerQuestions
+            # self.duration = self.test.duration
+            totalQuestions = Question.objects.filter(
+                test=self.test.id).all().count()
+            maxQuestions = test.noOfQuestions or totalQuestions
+            self.totalQuestions = min(maxQuestions, totalQuestions)
+            sequence = random.sample(
+                range(0, totalQuestions), self.totalQuestions)
+            questions = Question.objects.filter(test=self.test.id)
+
+            print('totalqus', totalQuestions, maxQuestions)
+            answers = []
+            for x in sequence:
+                answers.append(
+                    Answer(answerSheet=self, question=questions[x]))
+
+            self.startedAt = datetime.datetime.now()
+            self.save()
+            return answers
+
+        except:
+            raise
+
+    def endTest(self):
+        self.ended = True
+        self.save()
+
+    def getMarks(self):
+        correctAns = Answer.objects.filter(
+            answerSheet=self.id, isCorect=True).count()
+        return correctAns*self.marksPerQuestion
+
+
+class Answer(models.Model):
+    answerSheet = models.ForeignKey(Answersheet, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    selectedChoice = models.CharField(max_length=8, blank=True, null=True)
+    isCorect = models.BooleanField(default=False)
+    statusList = [('notAnswered', 'notAnswered'),
+                  ('answered', 'answered'), ('inReview', 'inReview')]
+    status = models.CharField(
+        max_length=15, choices=statusList, default='notAnswered')
+
+    def __str__(self):
+        return self.question.name+', {corect}'.format(corect=self.isCorect)

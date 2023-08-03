@@ -8,25 +8,26 @@ import random
 import math
 
 
-def mapwithAns(questions, testTaker, testId):
-    testTaker = models.TestTaker.objects.values().get(email=testTaker)
+def mapwithAns(answers, answerSheet):
+    # testTaker = models.TestTaker.objects.values().get(email=testTaker)
 
-    def getAnswer(question):
-        try:
-            answer = models.Answer.objects.values().get(
-                question=question['id'], testTaker=testTaker['id'], test=testId)
-            question['default'] = answer['selectedChoice']
-            print(answer, 'answer')
-            return question
-        except:
-            print('no answer')
-            return question
+    def getAnswer(answer):
+        # print(answer['question_id'], 'answer')
+        # try:
+        question = models.Question.objects.values().get(
+            id=answer['question_id'])
+        question['default'] = answer['selectedChoice']
+        print(question, 'answer')
+        return question
+        # except:
+        #     print('no answer')
+        #     return answers
         # else:
         #     question['default'] = answer['selectedChoice']
         # finally:
         #     return question
 
-    questions = map(getAnswer, questions)
+    questions = map(getAnswer, answers)
     return questions
 
 
@@ -46,14 +47,27 @@ def index(request):
     if not (testTaker):
         return redirect('/login')
 
-    total = models.Question.objects.count()
-    questions = models.Question.objects.order_by(sortby).values().all()[
+    test = models.Test.objects.get(id=testId)
+    testTaker = models.TestTaker.objects.get(email=testTaker)
+    answerSheet = models.Answersheet.objects.filter(
+        test=test, testTaker=testTaker).first()
+
+    if (not answerSheet):
+        answerSheet = models.Answersheet(test=test, testTaker=testTaker)
+    answers = answerSheet.startTest()
+    if (answers):
+        for ans in answers:
+            ans.save()
+
+    total = models.Answer.objects.filter(answerSheet=answerSheet.id).count()
+    answers = models.Answer.objects.filter(answerSheet=answerSheet.id).values().all()[
         (page*10)-10:(page*10)]
     totalPage = math.ceil(total/10)
     end = page == totalPage
     start = (page == 1)
-    print(page, start, 'page')
-    questions = mapwithAns(questions, testTaker, testId)
+    # print(page, start, 'page', total, answers)
+
+    questions = mapwithAns(answers, answerSheet)
 
     return render(request, "index.html", {'questions': questions, "page": page, 'totalPage': totalPage, 'end': end, 'start': start})
 
@@ -98,6 +112,8 @@ def submit(request):
     if (request.method == 'POST'):
         form = request.POST
         print(form)
+        answerSheet = models.Answersheet.objects.get(
+            test=test.id, testTaker=testTaker.id)
         for x in form:
             if (x != 'csrfmiddlewaretoken' and x != 'submit' and x != 'prev' and x != 'next'):
                 question = models.Question.objects.get(id=x)
@@ -105,10 +121,11 @@ def submit(request):
                 isCorrect = question.correctAnswer == form[x]
                 try:
                     answer = models.Answer.objects.get(
-                        testTaker=testTaker.id, question=question.id, test=test.id)
+                        question=question.id, answerSheet=answerSheet.id)
                 except:
-                    answer = models.Answer(
-                        testTaker=testTaker, test=test, question=question, selectedChoice=form[x], isCorect=isCorrect)
+                    pass
+                    # answer = models.Answer(
+                    #     testTaker=testTaker, test=test, question=question, selectedChoice=form[x], isCorect=isCorrect)
                 else:
                     answer.selectedChoice = form[x]
                     answer.isCorect = isCorrect
@@ -131,11 +148,15 @@ def submit(request):
 def getResult(request):
     testTaker = request.session.get('testTaker', False)
     testTaker = models.TestTaker.objects.filter(
-        email__contains=testTaker).values()[0]
+        email__contains=testTaker)[0]
     testId = request.session.get('testId')
 
-    total = models.Answer.objects.filter(
-        testTaker=testTaker['id'], test=testId, isCorect=True).count()
+    answerSheet = models.Answersheet.objects.get(
+        test=testId, testTaker=testTaker.id)
+    total = answerSheet.getMarks()
+
+    # total = models.Answer.objects.filter(
+    #     testTaker=testTaker['id'], test=testId, isCorect=True).count()
 
     return render(request, 'result.html', {'total': total})
 
