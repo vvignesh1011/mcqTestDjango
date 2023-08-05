@@ -53,23 +53,31 @@ def index(request):
         test=test, testTaker=testTaker).first()
 
     if (not answerSheet):
-        answerSheet = models.Answersheet(test=test, testTaker=testTaker)
+        answerSheet = models.Answersheet(
+            test=test, testTaker=testTaker, duration=test.duration)
     answers = answerSheet.startTest()
     if (answers):
         for ans in answers:
             ans.save()
 
+    if (answerSheet.isEnded):
+        return redirect('/result')
+
     total = models.Answer.objects.filter(answerSheet=answerSheet.id).count()
     answers = models.Answer.objects.filter(answerSheet=answerSheet.id).values().all()[
-        (page*10)-10:(page*10)]
-    totalPage = math.ceil(total/10)
+        (page*1)-1:(page*1)]
+    totalPage = math.ceil(total/1)
     end = page == totalPage
     start = (page == 1)
     # print(page, start, 'page', total, answers)
 
     questions = mapwithAns(answers, answerSheet)
 
-    return render(request, "index.html", {'questions': questions, "page": page, 'totalPage': totalPage, 'end': end, 'start': start})
+    return render(request, "index.html", {'questions': questions,
+                                          "page": page,
+                                          'totalPage': totalPage,
+                                          'end': end,
+                                          'start': start, 'answerSheet': answerSheet})
 
 
 def login(request):
@@ -139,6 +147,8 @@ def submit(request):
             if (x == 'prev'):
                 request.session.__setitem__('page', page-1)
             if (x == 'submit'):
+                answerSheet.submited = True
+                answerSheet.save()
                 resultPage = True
         if (resultPage):
             return redirect('result')

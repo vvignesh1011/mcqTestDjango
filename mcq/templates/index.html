@@ -9,12 +9,22 @@
     <title>Document</title>
   </head>
   <body style="padding: 10px">
-    <a style="margin: 20px; margin-left: auto; float: right" href="/logout"
-      >logout</a
-    >
-    <form action="/submit" method="post">
+
+    <div class="background">
+      <!-- top  -->
+    <div class="top">
+      <div class="title">{{answerSheet.test.name}}</div>
+      <div class="timming"><a style="margin: 20px; margin-left: auto; float: right" href="/logout"
+      >logout</a>
+    <div id="time"></div></div>
+
+    </div>
+    
+    
+    
+    <form id="form" action="/submit" method="post">
       {% csrf_token%} {% for x in questions %}
-      <div class="container">
+      <div class="container middle">
         <p class="question">{{forloop.counter}} . {{x.name}}</p>
 
         <ul class="choices">
@@ -64,7 +74,7 @@
       </div>
       {%endfor%}
 
-      <div class="btn-container">
+      <div class="btn-container bottom">
         {% if start %}
         <input
           type="submit"
@@ -85,5 +95,42 @@
         {%endif%}
       </div>
     </form>
+    <script src="{%static 'js/index.js'%}"></script>
+    <script>
+      function secondsToHms(d) {
+        d = Number(d);
+        var h = Math.floor(d / 3600);
+        var m = Math.floor((d % 3600) / 60);
+        var s = Math.floor((d % 3600) % 60);
+
+        var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
+        var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
+        var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+        let displaystr = hDisplay + mDisplay + sDisplay;
+        if (!displaystr) {
+          let form =document.getElementById('form')
+          let btn=form.submit || form.next
+          btn.click()
+          return "Timeout"};
+        return displaystr + " Remaining";
+      }
+      let startTime = new Date("{{answerSheet.startedAt|escapejs}}");
+      let duration = "{{answerSheet.duration}}";
+      let endTime = new Date(startTime.getTime() + duration * 60 * 1000);
+      if (duration !=0)
+        setInterval(() => {
+          let time = document.getElementById("time");
+          time.innerHTML = secondsToHms((endTime - new Date()) / 1000);
+        }, 1000);
+
+      console.log(
+        duration,
+        startTime,
+        endTime,
+        "{{answerSheet.startedAt|escapejs }}"
+      );
+    </script>
+    </div>
+    
   </body>
 </html>

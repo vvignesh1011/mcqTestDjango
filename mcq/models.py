@@ -1,6 +1,7 @@
 from django.db import models
 import datetime
 import random
+import pytz
 
 # Create your models here.
 
@@ -8,7 +9,7 @@ import random
 class Test(models.Model):
     name = models.CharField(unique=True, max_length=250)
     duration = models.IntegerField(
-        blank=True, null=True, name='duration in minutes')
+        default=0)
     noOfQuestions = models.IntegerField(blank=True, null=True)
     marksPerQuestions = models.IntegerField(default=1)
 
@@ -43,14 +44,28 @@ class TestTaker(models.Model):
 class Answersheet(models.Model):
     testTaker = models.ForeignKey(TestTaker, on_delete=models.CASCADE)
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    duration = models.IntegerField(default=0)
     startedAt = models.DateTimeField(blank=True, null=True)
     endAt = models.DateTimeField(blank=True, null=True)
     marksPerQuestion = models.IntegerField(default=1)
     totalQuestions = models.IntegerField(default=0)
-    ended = models.BooleanField(default=False)
+    submited = models.BooleanField(default=False)
+
+    @property
+    def isEnded(self):
+        if (self.submited):
+            return True
+        if (self.duration):
+            seconds = datetime.datetime.now(
+                tz=pytz.timezone('Asia/Kolkata'))-self.startedAt
+            duration = seconds.total_seconds()/60
+            print(duration, 'duration')
+            if (duration > self.duration):
+                return True
+        return False
 
     def __str__(self):
-        return f"self.test self.test self.getMarks()"+'/'+f"self.mak"
+        return self.testTaker.name + " " + self.test.name + " {}".format(self.getMarks()) + 'marks'
 
 # start test
     def startTest(self):
@@ -77,7 +92,8 @@ class Answersheet(models.Model):
                 answers.append(
                     Answer(answerSheet=self, question=questions[x]))
 
-            self.startedAt = datetime.datetime.now()
+            self.startedAt = datetime.datetime.now(
+                tz=pytz.timezone('Asia/Kolkata'))
             self.save()
             return answers
 

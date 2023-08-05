@@ -4,6 +4,13 @@
   box-sizing: border-box;
 }
 
+body{
+  
+  background-image: url('../images/background/background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .loginCard {
   display: flex;
   width: 100%;
@@ -37,7 +44,8 @@
   width: 100%;
   flex-direction: row;
   justify-content: space-around;
-  align-items: center;
+  /* align-items: center; */
+  align-items: first baseline;
 }
 
 .btn-container input {
@@ -49,4 +57,47 @@
 .btn-container input:hover {
   cursor: pointer;
   transform: scale(1.1);
+}
+
+
+.top{
+  height: 20vh;
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+padding: 0 50px;
+align-items:center;
+color: white;
+}
+
+.top a {
+  color: white;
+  text-transform: capitalize;
+  font-size: 20px;
+}
+
+.middle{
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* align-items: center; */
+
+  color: white;
+}
+.bottom{
+  height: 20vh;
+  padding-bottom: auto;
+  color: white;
+  
+}
+
+.timming{
+  display: flex;
+  flex-direction: column;
+}
+
+.title{
+  text-transform: capitalize;
+  font-size: 25px;
 }
