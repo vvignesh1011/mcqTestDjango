@@ -3,6 +3,8 @@ from . import models
 
 # Register your models here.
 
+
+# for Test
 @admin.register(models.Test)
 class TestAdmin(admin.ModelAdmin):
     list_display=('name','duration','noOfQuestions','marksPerQuestions')
@@ -10,6 +12,8 @@ class TestAdmin(admin.ModelAdmin):
     sortable_by=('name',)
 
 
+
+# for Questions
 @admin.register(models.Question)
 class QuestionAdmin(admin.ModelAdmin):
     list_display=('name','test')
@@ -18,6 +22,7 @@ class QuestionAdmin(admin.ModelAdmin):
     list_filter=('test',)
 
 
+# for Answers
 @admin.register(models.Answer)
 class AnswerAdmin(admin.ModelAdmin):
     list_display=('testTakerName','testName','question','isCorect')
@@ -25,6 +30,8 @@ class AnswerAdmin(admin.ModelAdmin):
     search_fields=('answerSheet__testTaker__name',)
     sortable_by=('answerSheet__test',)
 
+
+# for TestTaker
 @admin.register(models.TestTaker)
 class TestTakerAdmin(admin.ModelAdmin):
     list_display=('name','email')
@@ -32,7 +39,7 @@ class TestTakerAdmin(admin.ModelAdmin):
     sortable_by=('name')
     
 
-
+# for answerSheet
 @admin.register(models.Answersheet)
 class AnswersheetAdmin(admin.ModelAdmin):
     list_display = ('testTaker','test','isEnded','marks')
