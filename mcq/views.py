@@ -138,6 +138,8 @@ def submit(request):
                     #     testTaker=testTaker, test=test, question=question, selectedChoice=form[x], isCorect=isCorrect)
                 else:
                     answer.selectedChoice = form[x]
+                    if(answer.selectedChoice):
+                        answer.status='answered'
                     answer.isCorect = isCorrect
 
                 answer.save()
