@@ -25,7 +25,7 @@
     <form id="form" action="/submit" method="post">
       {% csrf_token%} {% for x in questions %}
       <div class="container middle">
-        <p class="question">{{forloop.counter}} . {{x.name}}</p>
+        <p class="question">{{page}} . {{x.name}}</p>
 
         <ul class="choices">
           <li>
