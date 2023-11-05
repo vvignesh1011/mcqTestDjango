@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+import datetime
+import pytz
 
 # Create your views here.
 
@@ -148,6 +150,8 @@ def submit(request):
                 request.session.__setitem__('page', page-1)
             if (x == 'submit'):
                 answerSheet.submited = True
+                answerSheet.endAt=datetime.datetime.now(
+                tz=pytz.timezone('Asia/Kolkata'))
                 answerSheet.save()
                 resultPage = True
         if (resultPage):
