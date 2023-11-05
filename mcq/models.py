@@ -15,6 +15,7 @@ class Test(models.Model):
 
     def __str__(self):
         return self.name
+    
 
 
 class Question(models.Model):
@@ -51,6 +52,7 @@ class Answersheet(models.Model):
     totalQuestions = models.IntegerField(default=0)
     submited = models.BooleanField(default=False)
 
+
     @property
     def isEnded(self):
         if (self.submited):
@@ -63,6 +65,11 @@ class Answersheet(models.Model):
             if (duration > self.duration):
                 return True
         return False
+
+    @property
+    def marks(self):
+        return self.getMarks()
+
 
     def __str__(self):
         return self.testTaker.name + " " + self.test.name + " {}".format(self.getMarks()) + 'marks'
@@ -119,6 +126,15 @@ class Answer(models.Model):
                   ('answered', 'answered'), ('inReview', 'inReview')]
     status = models.CharField(
         max_length=15, choices=statusList, default='notAnswered')
+    
+    @property 
+    def testTakerName(self):
+        return self.answerSheet.testTaker.name
+    
+    @property
+    def testName(self):
+        return self.answerSheet.test
+    
 
     def __str__(self):
         return self.question.name+', {corect}'.format(corect=self.isCorect)
