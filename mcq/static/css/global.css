@@ -1,0 +1,19 @@
+@font-face {
+    font-family: monsterrat-bold;
+    src: url('../fonts/Montserrat/static/Montserrat-Bold.ttf');
+    }
+
+@font-face {
+    font-family: mosterrat;
+    src: url('../fonts/Montserrat/static/Montserrat-Regular.ttf');
+}
+
+@font-face {
+    font-family: roboto-bold;
+    src: url('../fonts/Roboto/Roboto-Bold.ttf');
+}
+
+@font-face {
+    font-family: roboto;
+    src: url('../fonts/Roboto/Roboto-Regular.ttf');
+}

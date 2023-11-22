@@ -9,28 +9,45 @@
   </head>
   <body>
     {% comment %} {%for x in test%} {{x}} {%endfor%} {% endcomment %}
-    <div class="loginCard">
-      <form action="/login" method="post" class="login-form">
-        {% csrf_token %}
-        <label class="inp" for="name">name :</label><br />
-        <input class="inp" type="text" name="name" id="name" required /><br />
-        <label class="inp" for="email">Email :</label><br />
-        <input
-          class="inp"
-          type="email"
-          name="email"
-          id="email"
-          required
-        /><br />
-        <label class="inp" for="test">Select Test</label><br />
-        <select class="inp" name="test" id="test" required>
-          {%for x in test%}
-          <option value="{{x.id}}">{{x.name}}</option>
-          {%endfor%}</select
-        ><br />
-        <input class="inp" type="submit" name="submit" id="submit" />
-      </form>
-      <br />
+    <div class="circle outer-top"></div>
+    <div class="circle outer-corner"></div>
+    <div class="outer">
+        <div class="container">
+            <div class="form-container">
+              <div class="top-cricle circle"></div>
+              <div class="bottom-cricle circle"></div>
+                <h1 class="main-heading">Let's revail your <br/> knowladge</h1>
+
+                <h3>login to take a test</h3>
+
+                <form  action="/login" method="post" class="login-form">
+                    {% csrf_token %}
+                    <label class="inp" for="name">name :</label><br />
+                    <input class="inp" type="text" name="name" id="name" required /><br />
+                    <label class="inp" for="email">Email :</label><br />
+                    <input
+                      class="inp"
+                      type="email"
+                      name="email"
+                      id="email"
+                      required
+                    /><br />
+                    <label class="inp" for="test">Select Test</label><br />
+                    <select class="inp" name="test" id="test" required>
+                      {%for x in test%}
+                      <option value="{{x.id}}">{{x.name}}</option>
+                      {%endfor%}</select
+                    ><br />
+                    <input class="submit-btn" type="submit" name="submit" id="submit" />
+                  </form>
+            
+            </div>
+            <div class="image-container">
+            <img src="../static/images/books.png" class="book-img" alt="">
+            <div class="circle img-corner" ></div>
+            <div class="circle img-left" ></div>
+            </div>
+        </div>
     </div>
   </body>
 </html>
