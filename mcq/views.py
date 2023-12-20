@@ -124,6 +124,8 @@ def submit(request):
         print(form)
         answerSheet = models.Answersheet.objects.get(
             test=test.id, testTaker=testTaker.id)
+        if (answerSheet.isEnded):
+            return redirect('result')
         for x in form:
             if (x != 'csrfmiddlewaretoken' and x != 'submit' and x != 'prev' and x != 'next'):
                 question = models.Question.objects.get(id=x)
@@ -138,8 +140,8 @@ def submit(request):
                     #     testTaker=testTaker, test=test, question=question, selectedChoice=form[x], isCorect=isCorrect)
                 else:
                     answer.selectedChoice = form[x]
-                    if(answer.selectedChoice):
-                        answer.status='answered'
+                    if (answer.selectedChoice):
+                        answer.status = 'answered'
                     answer.isCorect = isCorrect
 
                 answer.save()
@@ -152,8 +154,8 @@ def submit(request):
                 request.session.__setitem__('page', page-1)
             if (x == 'submit'):
                 answerSheet.submited = True
-                answerSheet.endAt=datetime.datetime.now(
-                tz=pytz.timezone('Asia/Kolkata'))
+                answerSheet.endAt = datetime.datetime.now(
+                    tz=pytz.timezone('Asia/Kolkata'))
                 answerSheet.save()
                 resultPage = True
         if (resultPage):
